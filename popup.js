@@ -73,7 +73,7 @@ function getShortUrl(fullURL, callback, errorCallback) {
         //  "longurl": "http://help.baidu.com/question?prod_en=webmaster",
         //  "err_msg": ""
         // }
-        // 
+        //
         // Err
         // {
         //  "status": -1,
@@ -118,8 +118,10 @@ function renderStatus(statusText) {
     document.getElementById('status').textContent = statusText;
 }
 
-function renderShortURL(shortURL) {
-    document.getElementById('short-url').value = shortURL;
+function renderShortURL(title, shortURL) {
+    content = '\u300A' + title + '\u300B'
+    content = content + '\n' + shortURL
+    document.getElementById('short-url').value = content;
     document.getElementById('short-url').hidden = false;
     document.getElementById("short-url").select();
 }
@@ -135,7 +137,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             renderStatus('Copied!');
             // console.log('shortUrl: ' + shortUrl);
-            renderShortURL(shortUrl)
+
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+                title = tabs[0].title;
+                renderShortURL(title, shortUrl)
+            });
 
             // copy selected field to clipboard
             document.execCommand("Copy", false, null);
